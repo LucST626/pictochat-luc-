@@ -46,7 +46,7 @@
   
   li{
     padding: 0.1rem;
-    user-select: text;
+    user-select: none;
   }
   
   li:nth-child(odd) { 

@@ -1,3 +1,8 @@
+const socket = io();
+const form = document.getElementById('formulario');
+const input = document.getElementById('inputTexto');
+const messages = document.getElementById('mensajes');
+
 let isDragging = false;
 const elemento = $('section')
   $( function() {
@@ -5,7 +10,12 @@ const elemento = $('section')
       start: function() {
         isDragging = true;
       },
+      drag: function() {
+        console.log("arrastrando")
+
+      },
       stop: function() {
+        console.log("me has soltado")
         isDragging = false;
       }
     });
@@ -21,40 +31,7 @@ function toggleChat(){
     form.style.display = "none"
   }
 }
-
-const socket = io();
-
-const form = document.getElementById('form');
-const input = document.getElementById('inputText')
-const messages = document.getElementById('messages');
-
-//Este evento manda el evento de socket 'chat message' al backend
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
-  if (input.value) {
-    socket.emit('chat message', input.value);
-    input.value = '';
-  }
-});
-
-//Evento de inicio de chat
-socket.on('init chat', (mensajes) => {
-  console.log(mensajes)
-  mensajes.forEach(mensajeObjeto => {
-    const li = document.createElement("li");
-    li.innerHTML = mensajeObjeto.mensaje;
-    messages.appendChild(li);
-  });
-});
-
-//Este evento se dispara cuando el backend me responde con 'chat message'
-socket.on('chat message', (msg) => {
-  const item = document.createElement('li');
-  item.textContent = msg;
-  messages.appendChild(item);
-  window.scrollTo(0, document.body.scrollHeight);
-});
-
+ 
 function setup() {
   createCanvas(windowWidth, windowHeight);
 }
@@ -65,11 +42,41 @@ function draw() {
             x: mouseX,
             y: mouseY
         }
-      //socket.emit("paint", datos)
+        //socket.emit("paint", datos)
       fill(0);
       //ellipse(mouseX, mouseY, 20)
       line(mouseX, mouseY, pmouseX, pmouseY)
     }
 }
+
+
+form.addEventListener('submit', (e) => {
+e.preventDefault();
+if (input.value) {
+socket.emit('chat message', input.value);
+input.value = '';
+}
+});
+
+//Eveneto inicio chat
+socket.on('init chat', (mensajes)=> {
+  console.log(mensajes)
+  mensajes.forEach(mensajesOBJ => {
+    const li = document.createElement("li")
+    li.innerHTML = mensajesOBJ.mensaje
+    messages.appendChild(li)
+  })
+})
+
+socket.on('chat message', (msg) => {
+const item = document.createElement('li');
+item.textContent = msg;
+messages.appendChild(item);
+window.scrollTo(0, document.body.scrollHeight);
+});
+
+socket.on('paint', (datos) => {
+ellipse(datos.x, datos.y, 20)
+});
 
  
