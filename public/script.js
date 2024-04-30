@@ -6,7 +6,7 @@ const elemento = $('section')
         isDragging = true;
       },
       stop: function() {
-        isDragging = false
+        isDragging = false;
       }
     });
   } );
@@ -21,36 +21,39 @@ function toggleChat(){
     form.style.display = "none"
   }
 }
- 
+
 const socket = io();
 
-  const form = document.getElementById('formulario');
-  const input = document.getElementById('inputTexto');
-  const messages = document.getElementById('mensajes');
+const form = document.getElementById('form');
+const input = document.getElementById('inputText')
+const messages = document.getElementById('messages');
 
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    if (input.value) {
-      socket.emit('chat message', input.value);
-      input.value = '';
-    }
-  });
-
-  socket.on('init chat', (mensajes)=>{
-mensajes.forEach(mensajeObjeto =>{
-const li = document.createElement("li");
-li.innerHTML = mensajeObjeto.mensaje;
-messages.appendChild(li)
-})  
+//Este evento manda el evento de socket 'chat message' al backend
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  if (input.value) {
+    socket.emit('chat message', input.value);
+    input.value = '';
+  }
 });
 
-  socket.on('chat message', (msg) => {
-    const item = document.createElement('li');
-    item.textContent = msg;
-    messages.appendChild(item);
-    window.scrollTo(0, document.body.scrollHeight);
+//Evento de inicio de chat
+socket.on('init chat', (mensajes) => {
+  console.log(mensajes)
+  mensajes.forEach(mensajeObjeto => {
+    const li = document.createElement("li");
+    li.innerHTML = mensajeObjeto.mensaje;
+    messages.appendChild(li);
   });
+});
 
+//Este evento se dispara cuando el backend me responde con 'chat message'
+socket.on('chat message', (msg) => {
+  const item = document.createElement('li');
+  item.textContent = msg;
+  messages.appendChild(item);
+  window.scrollTo(0, document.body.scrollHeight);
+});
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -58,16 +61,15 @@ function setup() {
 
 function draw() {
     if(mouseIsPressed && !isDragging) {
-      if(mouseX !== pmouseX || mouseY !==  pmouseY){
         const datos = {
             x: mouseX,
-            y: mouseY,
-            px: pmouseX,
-            py: pmouseY}
-      }
-      isDragging=true;
+            y: mouseY
+        }
+      //socket.emit("paint", datos)
       fill(0);
-      line(pmouseX, pmouseY, mouseX, mouseY);
-    }}
+      //ellipse(mouseX, mouseY, 20)
+      line(mouseX, mouseY, pmouseX, pmouseY)
+    }
+}
 
  

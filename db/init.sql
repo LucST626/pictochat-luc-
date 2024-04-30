@@ -5,4 +5,4 @@ CREATE TABLE mensajes(
     mensaje TEXT NOT NULL
 );
 
-INSERT INTO  mensajes (mensaje) VALUES ('Hola Mundo');
+INSERT INTO mensajes (mensaje) VALUES ('Holaa');

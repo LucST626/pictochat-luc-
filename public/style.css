@@ -29,6 +29,7 @@
     flex-direction: column;
     width: 300px;
     border-radius: 0.5rem;
+    user-select: none;
   }
   
   #chat-titulo{
@@ -44,8 +45,8 @@
   }
   
   li{
-    user-select: text;
     padding: 0.1rem;
+    user-select: text;
   }
   
   li:nth-child(odd) { 
