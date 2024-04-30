@@ -59,23 +59,33 @@ input.value = '';
 });
 
 //Eveneto inicio chat
-socket.on('init chat', (mensajes)=>
-  mensajes.forEach(mensajesOBJ => {
-    const li = document.createElement("li")
+socket.on('init chat', (mensajes) => {
+  mensajes.forEach(mensajeOBJ => {
+    const li = document.createElement("li");
     if (mensajeOBJ.mensaje.startsWith("https://")) {
-    const link = document.querySelector("a")
-    link.href = mensajesOBJ.mensaje
+      const link = document.createElement("a");
+      link.href = mensajeOBJ.mensaje;
+      link.textContent = mensajeOBJ.mensaje;
+      li.appendChild(link);
+    } else {
+      li.textContent = mensajeOBJ.mensaje;
     }
-    li.innerHTML = mensajesOBJ.mensaje
-    messages.appendChild(li)
-  })
-)
+    messages.appendChild(li);
+  });
+});
 
 socket.on('chat message', (msg) => {
-const item = document.createElement('li');
-item.textContent = msg;
-messages.appendChild(item);
-window.scrollTo(0, document.body.scrollHeight);
+  const item = document.createElement('li');
+  if (msg.startsWith("https://")) {
+    const link = document.createElement("a");
+    link.href = msg;
+    link.textContent = msg;
+    item.appendChild(link);
+  } else {
+    item.textContent = msg;
+  }
+  messages.appendChild(item);
+  window.scrollTo(0, document.body.scrollHeight);
 });
 
 socket.on('paint', (datos) => {
